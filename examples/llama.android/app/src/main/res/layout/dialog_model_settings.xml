@@ -1,0 +1,899 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#0F172A">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚙️ 模型与硬件推理配置"
+            android:textColor="#F8FAFC"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_device_detected_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="端侧硬件自适应推理引擎 (NPU / CPU 协同调用)"
+            android:textColor="#94A3B8"
+            android:textSize="12sp" />
+
+        <!-- Quick Optimization Presets Card for Universal Mobile Hardware -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#0284C7"
+            app:cardBackgroundColor="#0C4A6E">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <TextView
+                    android:id="@+id/tv_preset_card_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡ 智能硬件算力预设 (机型自适应)"
+                    android:textColor="#38BDF8"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_device_hardware_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="动态检测设备硬件中..."
+                    android:textColor="#BAE6FD"
+                    android:textSize="11sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+
+                    <Button
+                        android:id="@+id/btn_preset_hybrid_recommended"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="🎯 智能推荐混合 (硬件加速 + CPU并发)"
+                        android:textSize="11sp"
+                        android:backgroundTint="#0284C7"
+                        android:textColor="#FFFFFF"
+                        android:paddingHorizontal="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="6dp">
+
+                    <Button
+                        android:id="@+id/btn_preset_npu_full"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="⚡ 全硬件加速 (专用加速核心)"
+                        android:textSize="11sp"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:textColor="#38BDF8"
+                        app:strokeColor="#38BDF8"
+                        android:layout_marginEnd="6dp"
+                        android:paddingHorizontal="4dp" />
+
+                    <Button
+                        android:id="@+id/btn_preset_cpu_full"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="💻 CPU 完整模式 (超长上下文)"
+                        android:textSize="11sp"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:textColor="#A7F3D0"
+                        app:strokeColor="#059669"
+                        android:paddingHorizontal="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 1. Model Selection & Zero-Copy Management Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#334155"
+            app:cardBackgroundColor="#1E293B">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📁 GGUF 模型文件管理 (零复制 / 防磨损)"
+                    android:textColor="#38BDF8"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_current_model_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="当前未加载模型"
+                    android:textColor="#E2E8F0"
+                    android:textSize="13sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:boxStrokeColor="#38BDF8"
+                        app:boxBackgroundColor="#0F172A"
+                        android:hint="模型路径 (如 /sdcard/Models/...)">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_model_path"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F8FAFC"
+                            android:textSize="12sp"
+                            android:singleLine="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btn_browse_model"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="浏览..."
+                        android:backgroundTint="#2563EB"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="* 采用直接文件描述符映射，无需复制移动模型，杜绝闪存磨损与存储浪费"
+                    android:textColor="#64748B"
+                    android:textSize="11sp" />
+
+                <!-- Recent Models -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="最近使用模型:"
+                    android:textColor="#94A3B8"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:id="@+id/ll_recent_models"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="4dp" />
+
+                <!-- mmproj Multimodal Projector Model -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="🖼️ 多模态视觉模型 (mmproj *.gguf 可选):"
+                    android:textColor="#38BDF8"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:boxStrokeColor="#38BDF8"
+                        app:boxBackgroundColor="#0F172A"
+                        android:hint="mmproj 路径 (如 /sdcard/Models/mmproj.gguf)">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_mmproj_path"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F8FAFC"
+                            android:textSize="12sp"
+                            android:singleLine="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btn_browse_mmproj"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="选择..."
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:textColor="#38BDF8"
+                        app:strokeColor="#38BDF8" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="* 配合多模态大模型(如 Qwen2-VL, MiniCPM-V, LLaVA)，支持输入图片提问与图文理解"
+                    android:textColor="#64748B"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 2. Hardware Accelerator Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#334155"
+            app:cardBackgroundColor="#1E293B">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡ 硬件加速核心 (Compute Backend)"
+                    android:textColor="#38BDF8"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/rg_accelerator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+
+                    <RadioButton
+                        android:id="@+id/rb_hybrid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚡ 异构合并协同调用 (加速器分流 + CPU并发计算)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="13sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_npu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚀 端侧专用 NPU 硬件加速 (Hexagon HTP / APU)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="13sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_gpu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎮 移动端 GPU 通用图形算力加速 (Adreno / Mali)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="13sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_cpu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💻 ARM Cortex CPU 全兼容执行 (KleidiAI / NEON)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="13sp" />
+                </RadioGroup>
+
+                <!-- NPU Topology -->
+                <TextView
+                    android:id="@+id/tv_topology_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="加速核心调度拓扑 (Topology):"
+                    android:textColor="#94A3B8"
+                    android:textSize="12sp" />
+
+                <RadioGroup
+                    android:id="@+id/rg_topology"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp">
+
+                    <RadioButton
+                        android:id="@+id/rb_topo_single"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HTP0 (单核心会话 - 极稳定，功耗低，推荐)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="13sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_topo_dual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HTP0:0,HTP0:1 (双会话并发 - 提升加速器利用率)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="13sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_topo_layer_split"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2 (多会话分层 - 扩展显存窗口)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="13sp" />
+                </RadioGroup>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 3. Inference Tuning & Heat Management Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#334155"
+            app:cardBackgroundColor="#1E293B">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌡️ 性能与发热控制参数"
+                    android:textColor="#38BDF8"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <!-- Offload Layers -->
+                <TextView
+                    android:id="@+id/tv_label_layers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="NPU 卸载层数: 99 (全部层)"
+                    android:textColor="#CBD5E1"
+                    android:textSize="13sp" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/slider_offload_layers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="0"
+                    android:valueTo="99"
+                    android:stepSize="1"
+                    android:value="99"
+                    app:thumbColor="#38BDF8"
+                    app:trackColorActive="#38BDF8"
+                    app:trackColorInactive="#334155" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="* 卸载全部层至 NPU 可避免 CPU 参与矩阵运算，从源头降低发热"
+                    android:textColor="#64748B"
+                    android:textSize="11sp" />
+
+                <!-- Threads & Context -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="CPU 线程数"
+                        app:boxStrokeColor="#38BDF8"
+                        app:boxBackgroundColor="#0F172A">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_threads"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:text="4"
+                            android:textColor="#F8FAFC" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:hint="上下文长度"
+                        app:boxStrokeColor="#38BDF8"
+                        app:boxBackgroundColor="#0F172A">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_ctx_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:text="4096"
+                            android:textColor="#F8FAFC" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="* 推荐 4 线程 (若设为 6-8 会全开 CPU 超大核/性能核，易导致发热降频)"
+                    android:textColor="#EAB308"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 4. Advanced Mode Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#7C3AED"
+            app:cardBackgroundColor="#1E1B4B">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Header with Switch -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🛠️ 高级参数模式 (Advanced Mode)"
+                            android:textColor="#C084FC"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="深度调优 KV 缓存量化、批处理、采样与 Hexagon 驱动"
+                            android:textColor="#A5B4FC"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_advanced_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        app:thumbTint="#A855F7"
+                        app:trackTint="#4C1D95" />
+                </LinearLayout>
+
+                <!-- Collapsible Advanced Settings Container -->
+                <LinearLayout
+                    android:id="@+id/ll_advanced_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginTop="12dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#312E81"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- 4.1 KV Cache Quantization -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1. KV Cache 显存量化 (KV Cache Quantization):"
+                        android:textColor="#E0E7FF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/rg_kv_cache"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp">
+
+                        <RadioButton
+                            android:id="@+id/rb_kv_q8_0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Q8_0 (推荐: 显存带宽减半，显著加速生成)"
+                            android:textColor="#E2E8F0"
+                            android:checked="true"
+                            android:textSize="12sp" />
+
+                        <RadioButton
+                            android:id="@+id/rb_kv_f16"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="FP16 (原生精度: 完整 16-bit 浮点缓存)"
+                            android:textColor="#E2E8F0"
+                            android:textSize="12sp" />
+
+                        <RadioButton
+                            android:id="@+id/rb_kv_q4_0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Q4_0 (轻量化: 显存占用仅 1/4，优化显存占用)"
+                            android:textColor="#E2E8F0"
+                            android:textSize="12sp" />
+                    </RadioGroup>
+
+                    <!-- 4.2 Flash Attention Mode -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="2. Flash Attention 算子控制:"
+                        android:textColor="#E0E7FF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/rg_flash_attn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp">
+
+                        <RadioButton
+                            android:id="@+id/rb_fa_disabled"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="禁用 (推荐: 针对长上下文 NPU 稳定，防驱动崩溃)"
+                            android:textColor="#E2E8F0"
+                            android:checked="true"
+                            android:textSize="12sp" />
+
+                        <RadioButton
+                            android:id="@+id/rb_fa_auto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="自动 (AUTO: 模型与驱动协商选择)"
+                            android:textColor="#E2E8F0"
+                            android:textSize="12sp" />
+
+                        <RadioButton
+                            android:id="@+id/rb_fa_enabled"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="强制开启 (ENABLED: 极短上下文加速)"
+                            android:textColor="#E2E8F0"
+                            android:textSize="12sp" />
+                    </RadioGroup>
+
+                    <!-- 4.3 Batch Sizes -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="3. 批处理大小 (Batch Sizes):"
+                        android:textColor="#E0E7FF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="ubatch (物理批)"
+                            app:boxStrokeColor="#A855F7"
+                            app:boxBackgroundColor="#0F172A">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_ubatch_size"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:text="256"
+                                android:textColor="#F8FAFC" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="10dp"
+                            android:hint="n_batch (逻辑批)"
+                            app:boxStrokeColor="#A855F7"
+                            app:boxBackgroundColor="#0F172A">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_batch_size"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:text="512"
+                                android:textColor="#F8FAFC" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <!-- 4.4 CPU Core Affinity -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="4. CPU 核心亲和性 (Core Affinity):"
+                        android:textColor="#E0E7FF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_core_affinity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:checked="true"
+                        android:text="绑定高性能 CPU 核心 (避开能效小核心)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="12sp"
+                        app:thumbTint="#A855F7"
+                        app:trackTint="#4C1D95" />
+
+                    <!-- 4.5 Sampler Tuning -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="5. 文本生成与采样控制 (Sampler Tuning):"
+                        android:textColor="#E0E7FF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="Temp (温度)"
+                            app:boxStrokeColor="#A855F7"
+                            app:boxBackgroundColor="#0F172A">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_temp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:text="0.7"
+                                android:textColor="#F8FAFC" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="10dp"
+                            android:hint="Top-P"
+                            app:boxStrokeColor="#A855F7"
+                            app:boxBackgroundColor="#0F172A">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_top_p"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:text="0.9"
+                                android:textColor="#F8FAFC" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="6dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="Top-K"
+                            app:boxStrokeColor="#A855F7"
+                            app:boxBackgroundColor="#0F172A">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_top_k"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:text="40"
+                                android:textColor="#F8FAFC" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="10dp"
+                            android:hint="重复惩罚 (Repeat)"
+                            app:boxStrokeColor="#A855F7"
+                            app:boxBackgroundColor="#0F172A">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/et_repeat_penalty"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal"
+                                android:text="1.1"
+                                android:textColor="#F8FAFC" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <!-- 4.6 Hexagon Driver & Memory Tuning -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="6. Hexagon HTP 底层驱动与内存调优:"
+                        android:textColor="#E0E7FF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_dma64"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:checked="true"
+                        android:text="FastRPC DMA64 (64位寻址，杜绝4GB截断)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="12sp"
+                        app:thumbTint="#A855F7"
+                        app:trackTint="#4C1D95" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_mmap"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="mmap 零内存加载 (按需换页，极速启动)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="12sp"
+                        app:thumbTint="#A855F7"
+                        app:trackTint="#4C1D95" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_mlock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="mlock 锁定 RAM 内存 (防系统后台杀进程)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="12sp"
+                        app:thumbTint="#A855F7"
+                        app:trackTint="#4C1D95" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:hint="FastRPC VMEM 显存上限 (MB, 推荐 2800)"
+                        app:boxStrokeColor="#A855F7"
+                        app:boxBackgroundColor="#0F172A">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_vmem_mb"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:text="2800"
+                            android:textColor="#F8FAFC" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="* 硬件加速显存窗口 (VMEM)：大内存旗舰设为 2400-3200MB，标准机型设为 1200-1800MB，以防止显存溢出与崩溃"
+                        android:textColor="#A5B4FC"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btn_cancel_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取消"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:textColor="#94A3B8" />
+
+            <Button
+                android:id="@+id/btn_apply_reload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="🚀 保存并加载模型"
+                android:backgroundTint="#2563EB"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

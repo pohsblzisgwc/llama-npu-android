@@ -7,7 +7,7 @@ android {
     namespace = "com.arm.aichat"
     compileSdk = 36
 
-    ndkVersion = "29.0.13113456"
+    ndkVersion = "29.0.14206865"
 
     defaultConfig {
         minSdk = 33
@@ -16,33 +16,25 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
         ndk {
-             abiFilters += listOf("arm64-v8a", "x86_64")
+            abiFilters += listOf("arm64-v8a")
         }
         externalNativeBuild {
             cmake {
                 arguments += "-DCMAKE_BUILD_TYPE=Release"
-                arguments += "-DCMAKE_MESSAGE_LOG_LEVEL=DEBUG"
-                arguments += "-DCMAKE_VERBOSE_MAKEFILE=ON"
-
-                arguments += "-DBUILD_SHARED_LIBS=ON"
-                arguments += "-DLLAMA_BUILD_APP=OFF"
-                arguments += "-DLLAMA_BUILD_COMMON=ON"
-                arguments += "-DLLAMA_OPENSSL=OFF"
-
-                arguments += "-DGGML_NATIVE=OFF"
-                arguments += "-DGGML_BACKEND_DL=ON"
-                arguments += "-DGGML_CPU_ALL_VARIANTS=ON"
-                arguments += "-DGGML_LLAMAFILE=OFF"
             }
         }
         aarMetadata {
             minCompileSdk = 35
         }
     }
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDirs("src/main/jniLibs")
+        }
+    }
     externalNativeBuild {
         cmake {
             path("src/main/cpp/CMakeLists.txt")
-            version = "3.31.6"
         }
     }
     compileOptions {
@@ -58,6 +50,9 @@ android {
     }
 
     packaging {
+        jniLibs {
+            pickFirsts += listOf("**/libai-chat.so", "**/libc++_shared.so")
+        }
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }

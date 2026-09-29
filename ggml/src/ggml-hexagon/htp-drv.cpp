@@ -2,6 +2,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #ifdef _WIN32
 #   define WIN32_LEAN_AND_MEAN
@@ -331,21 +332,40 @@ using dl_handle_ptr = std::unique_ptr<dl_handle, dl_handle_deleter>;
 int htpdrv_init() {
     static dl_handle_ptr lib_cdsp_rpc_handle = nullptr;
     static bool initialized = false;
-#ifdef _WIN32
-    std::string drv_path = get_driver_path() + "\\" + "libcdsprpc.dll";
-#else
-    std::string drv_path = "libcdsprpc.so";
-#endif
     if (initialized) {
         GGML_LOG_INFO("ggml-hex: Driver already loaded\n");
         return AEE_SUCCESS;
     }
-    GGML_LOG_INFO("ggml-hex: Loading driver %s\n", drv_path.c_str());
 
-    fs::path path{ drv_path.c_str() };
-    dl_handle_ptr handle { dl_load_library(path) };
+    std::vector<std::string> candidate_paths;
+#ifdef _WIN32
+    candidate_paths.push_back(get_driver_path() + "\\" + "libcdsprpc.dll");
+#else
+    candidate_paths.push_back("libcdsprpc.so");
+    candidate_paths.push_back("/vendor/lib64/libcdsprpc.so");
+    candidate_paths.push_back("/system/vendor/lib64/libcdsprpc.so");
+    candidate_paths.push_back("libadsprpc.so");
+    candidate_paths.push_back("/vendor/lib64/libadsprpc.so");
+    candidate_paths.push_back("/system/vendor/lib64/libadsprpc.so");
+#endif
+
+    dl_handle_ptr handle = nullptr;
+    std::string loaded_path;
+    for (const auto & candidate : candidate_paths) {
+        GGML_LOG_INFO("ggml-hex: Attempting to load FastRPC driver: %s\n", candidate.c_str());
+        fs::path path{ candidate.c_str() };
+        handle.reset(dl_load_library(path));
+        if (handle) {
+            loaded_path = candidate;
+            GGML_LOG_INFO("ggml-hex: Successfully loaded FastRPC driver from: %s\n", candidate.c_str());
+            break;
+        } else {
+            GGML_LOG_WARN("ggml-hex: Could not load %s: %s\n", candidate.c_str(), dl_error());
+        }
+    }
+
     if (!handle) {
-        GGML_LOG_ERROR("ggml-hex: failed to load %s: %s\n", path.u8string().c_str(), dl_error());
+        GGML_LOG_ERROR("ggml-hex: Failed to load FastRPC driver from all candidate paths!\n");
         return AEE_EUNABLETOLOAD;
     }
 

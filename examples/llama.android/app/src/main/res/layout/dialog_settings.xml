@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hardware Accelerator &amp; Inference Settings"
+            android:textColor="#FF1A1A1A"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Hardware Accelerator"
+            android:textColor="#FF424242"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rg_accelerator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rb_npu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Dedicated Hardware Accelerator (Qualcomm Hexagon NPU) - Recommended"
+                android:textSize="13sp" />
+
+            <RadioButton
+                android:id="@+id/rb_cpu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ARM Cortex CPU (Multi-threaded NEON)"
+                android:textSize="13sp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Accelerator Topology"
+            android:textColor="#FF424242"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rg_topology"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rb_topo_single"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Single Session (HTP0) - Default"
+                android:textSize="13sp" />
+
+            <RadioButton
+                android:id="@+id/rb_topo_dual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dual Session Concurrent (HTP0:0,HTP0:1) - High Throughput"
+                android:textSize="13sp" />
+
+            <RadioButton
+                android:id="@+id/rb_topo_layer_split"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Virtual Layer-Split (HTP0:0,1) - Extended Address Space"
+                android:textSize="13sp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Offload Layers (Default: 99 for All)"
+            android:textColor="#FF424242"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_offload_layers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="99"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="CPU Thread Count"
+            android:textColor="#FF424242"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_threads"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="4"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Context Size (Tokens)"
+            android:textColor="#FF424242"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_ctx_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="4096"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="System Prompt"
+            android:textColor="#FF424242"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_system_prompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:hint="You are a helpful AI assistant running locally on mobile hardware."
+            android:lines="3"
+            android:text="You are a helpful, concise AI assistant running locally on mobile hardware."
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:text="llama-npu-android • Developed with AI (Google Antigravity / Gemini)"
+            android:textColor="#FF888888"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+</ScrollView>

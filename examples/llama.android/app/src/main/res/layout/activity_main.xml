@@ -1,77 +1,809 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:background="#090D16"
+    tools:openDrawer="start">
 
+    <!-- ========================================== -->
+    <!-- 1. MAIN CHAT PAGE (Only Conversations)     -->
+    <!-- ========================================== -->
     <LinearLayout
-        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginEnd="4dp"
-        tools:context=".MainActivity">
+        android:orientation="vertical">
 
-        <ScrollView
+        <!-- Minimal Clean Top Bar with WindowInsets support -->
+        <LinearLayout
+            android:id="@+id/main_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="#0F172A"
+            android:paddingHorizontal="8dp"
+            android:elevation="4dp">
+
+            <!-- Open Left Drawer (History) Button - 48dp touch target -->
+            <ImageButton
+                android:id="@+id/btn_open_history"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/outline_menu_24"
+                android:tint="#38BDF8"
+                android:contentDescription="对话历史"
+                android:padding="12dp" />
+
+            <!-- Title & Active Model -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="6dp">
+
+                <TextView
+                    android:id="@+id/tv_main_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="端侧 AI 异构推理"
+                    android:textColor="#F8FAFC"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tv_main_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="硬件加速 | 未加载模型"
+                    android:textColor="#94A3B8"
+                    android:textSize="11sp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
+
+            <!-- Open Right Drawer (System Monitor) Button - 48dp touch target -->
+            <ImageButton
+                android:id="@+id/btn_open_monitor"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/outline_bar_chart_24"
+                android:tint="#38BDF8"
+                android:contentDescription="系统监控"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <!-- Message List (Markdown Enabled) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/messages_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:fadeScrollbars="false">
+            android:clipToPadding="false"
+            android:paddingVertical="8dp"
+            tools:listitem="@layout/item_message_assistant" />
 
-            <TextView
-                android:id="@+id/gguf"
+        <!-- Multimodal Image Attachment Preview Bar -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_image_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#38BDF8"
+            app:cardBackgroundColor="#1E293B">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="Selected GGUF model's metadata will show here."
-                style="@style/TextAppearance.MaterialComponents.Body2" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="8dp">
 
-        </ScrollView>
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_image_preview_thumbnail"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small" />
 
-        <com.google.android.material.divider.MaterialDivider
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🖼️ 多模态图像已附加 (mmproj)"
+                        android:textColor="#38BDF8"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_image_preview_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="image.jpg"
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp"
+                        android:singleLine="true" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btn_remove_image_preview"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/outline_delete_24"
+                    app:tint="#EF4444"
+                    android:contentDescription="移除图片" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Input Bar with Send / Stop FAB - Inset Aware Container -->
+        <LinearLayout
+            android:id="@+id/bottom_input_container"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginHorizontal="16dp" />
+            android:layout_height="wrap_content"
+            android:background="#0F172A"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="8dp"
+            android:elevation="8dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/messages"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
-            android:fadeScrollbars="false"
-            android:scrollbars="vertical"
-            app:reverseLayout="true"
-            tools:listitem="@layout/item_message_assistant"/>
+            <ImageButton
+                android:id="@+id/btn_attach_image"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_assistant_message"
+                android:src="@drawable/outline_add_24"
+                app:tint="#38BDF8"
+                android:contentDescription="附加多模态图像" />
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/user_input_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="48dp"
+                android:background="@drawable/bg_assistant_message"
+                android:hint="输入消息与骁龙 NPU 对话..."
+                android:textColorHint="#64748B"
+                android:textColor="#F8FAFC"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="10dp"
+                android:textSize="14sp"
+                android:maxLines="4" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/user_action_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:fabSize="normal"
+                app:backgroundTint="#2563EB"
+                app:tint="#FFFFFF"
+                android:src="@drawable/outline_send_24"
+                android:contentDescription="发送或停止" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- =================================================================== -->
+    <!-- 2. LEFT DRAWER: Chat History & Model/Settings Entry (>3/4 width)     -->
+    <!-- =================================================================== -->
+    <LinearLayout
+        android:id="@+id/nav_left_drawer"
+        android:layout_width="340dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#0B1120"
+        android:orientation="vertical">
+
+        <!-- History Header with New Chat Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="4dp">
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="#0F172A">
 
-            <EditText
-                android:id="@+id/user_input"
-                android:enabled="false"
+            <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:padding="8dp"
-                style="@style/TextAppearance.MaterialComponents.Body2"
-                android:hint="Please first pick a GGUF model file to import." />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:enabled="true"
-                style="@style/Widget.Material3.FloatingActionButton.Primary"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:src="@drawable/outline_folder_open_24" />
+                android:layout_weight="1"
+                android:text="💬 对话记录"
+                android:textColor="#F8FAFC"
+                android:textSize="17sp"
+                android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/btn_new_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="+ 新建"
+                android:textSize="12sp"
+                android:backgroundTint="#2563EB"
+                android:textColor="#FFFFFF"
+                android:paddingHorizontal="12dp" />
         </LinearLayout>
 
+        <!-- Conversation History List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_history_conversations"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingVertical="8dp"
+            android:clipToPadding="false" />
+
+        <!-- Bottom-Left Corner: Dedicated Model & Inference Settings -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_btn_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#334155"
+            app:cardBackgroundColor="#1E293B">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/outline_tune_24"
+                    app:tint="#38BDF8"
+                    android:contentDescription="设置" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚙️ 模型管理与硬件设置"
+                        android:textColor="#F8FAFC"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_drawer_model_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="点击管理加载模型 / NPU参数"
+                        android:textColor="#94A3B8"
+                        android:textSize="11sp"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- =================================================================== -->
+    <!-- 3. RIGHT DRAWER: Comprehensive System & Hardware Monitor (>3/4 width) -->
+    <!-- =================================================================== -->
+    <ScrollView
+        android:id="@+id/nav_right_drawer"
+        android:layout_width="340dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="#0B1120">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Monitor Header -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📊 硬件与系统监控 (HUD)"
+                android:textColor="#F8FAFC"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="实时负载归属与发热诊断"
+                android:textColor="#94A3B8"
+                android:textSize="11sp" />
+
+            <!-- Card 1: Hardware Workload Attribution (CPU vs GPU vs NPU) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#334155"
+                app:cardBackgroundColor="#161E2E">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚡ 核心算力负载归属"
+                        android:textColor="#38BDF8"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_workload_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="纯 NPU 硬件加速"
+                        android:textColor="#E2E8F0"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="8dp"
+                        android:background="#242F42" />
+
+                    <!-- Detailed Offload Layers -->
+                    <TextView
+                        android:id="@+id/tv_mon_layers"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• NPU 卸载层数: 0/0 层"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_mon_active_backend"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="• 活跃后端: Qualcomm Hexagon HTP v75"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_mon_npu_topo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="• NPU 拓扑: HTP0 (DMA64 零拷贝开启)"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_mon_gpu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="• GPU: 待机 (未分配计算负载)"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card 2: Thermals & Temperature Monitor -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#334155"
+                app:cardBackgroundColor="#161E2E">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🌡️ 设备发热与核心温度"
+                        android:textColor="#38BDF8"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_mon_thermal_alert"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="🟢 正常凉爽 (无过热风险)"
+                        android:textColor="#4ADE80"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="6dp">
+
+                        <TextView
+                            android:id="@+id/tv_mon_battery_temp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="电池: -- °C"
+                            android:textColor="#CBD5E1"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tv_mon_soc_temp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="SoC 核心: -- °C"
+                            android:textColor="#CBD5E1"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card 3: CPU & RAM Occupancy -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#334155"
+                app:cardBackgroundColor="#161E2E">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💾 内存与 CPU 利用率"
+                        android:textColor="#38BDF8"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <!-- CPU Bar -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="6dp">
+
+                        <TextView
+                            android:id="@+id/tv_mon_cpu_usage"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="CPU 使用率: 0%"
+                            android:textColor="#CBD5E1"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tv_mon_threads"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="4 线程"
+                            android:textColor="#94A3B8"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/pb_cpu_usage"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="3dp"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressTint="#38BDF8" />
+
+                    <!-- RAM Bar -->
+                    <TextView
+                        android:id="@+id/tv_mon_ram_usage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="系统 RAM: -- / -- GB"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+
+                    <ProgressBar
+                        android:id="@+id/pb_ram_usage"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="3dp"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressTint="#A855F7" />
+
+                    <TextView
+                        android:id="@+id/tv_mon_app_mem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="App 进程占用: -- MB"
+                        android:textColor="#94A3B8"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card 4: Inference Speed & TTFT Telemetry -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#334155"
+                app:cardBackgroundColor="#161E2E">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⏱️ 推理吞吐与时延 (Telemetry)"
+                        android:textColor="#38BDF8"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_mon_prefill_speed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="• Prefill (首字吞吐): -- tokens/s"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_mon_decode_speed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="• Decode (持续生成): -- tokens/s"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_mon_ttft"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="• 首字时延 (TTFT): -- ms"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card 5: Process Protection & Keep-Alive (Android OS) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#10B981"
+                app:cardBackgroundColor="#064E3B">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🛡️ 进程常驻保活与防终止保护 (Process Protection)"
+                        android:textColor="#34D399"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="深度优化进程优先级，降低 LowMemoryKiller 回收风险"
+                        android:textColor="#A7F3D0"
+                        android:textSize="10sp" />
+
+                    <!-- Live OOM Score & Status -->
+                    <TextView
+                        android:id="@+id/tv_prot_oom_score"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="• OOM 评分 (oom_score_adj): 200 (前台服务保护)"
+                        android:textColor="#F0FDF4"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_prot_fgs_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="• 前台常驻保活服务: 运行中 (锁定优先级)"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_prot_battery_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="• 电池无限制白名单: 已豁免"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_prot_wakelock_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="• CPU 唤醒锁 (WakeLock): 已持有 (防熄屏休眠)"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp" />
+
+                    <!-- Foreground Service Toggle Switch -->
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_prot_fgs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:checked="true"
+                        android:text="前台常驻服务 (通知栏常驻保活)"
+                        android:textColor="#E2E8F0"
+                        android:textSize="11sp"
+                        app:thumbTint="#10B981"
+                        app:trackTint="#047857" />
+
+                    <!-- Action Buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/btn_prot_battery"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="⚡ 申请电池无限制"
+                            android:textSize="10sp"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:textColor="#6EE7B7"
+                            app:strokeColor="#10B981"
+                            android:paddingHorizontal="2dp" />
+
+                        <Button
+                            android:id="@+id/btn_prot_vendor_settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:text="📱 系统后台优化设置"
+                            android:textSize="10sp"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:textColor="#6EE7B7"
+                            app:strokeColor="#10B981"
+                            android:paddingHorizontal="2dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="6dp">
+
+                        <Button
+                            android:id="@+id/btn_prot_root"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="👑 Root 提权保活 (-1000)"
+                            android:textSize="10sp"
+                            android:backgroundTint="#059669"
+                            android:textColor="#FFFFFF"
+                            android:paddingHorizontal="2dp" />
+
+                        <Button
+                            android:id="@+id/btn_prot_adb"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:text="📋 复制 ADB 命令"
+                            android:textSize="10sp"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:textColor="#A7F3D0"
+                            app:strokeColor="#059669"
+                            android:paddingHorizontal="2dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="* 系统关键优化：建议在多任务卡片上下拉加锁，并关闭系统【内存扩展/虚拟内存】(避免 ZRAM 换页引起卡顿)"
+                        android:textColor="#BBF7D0"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card 6: Hardware Benchmark Action -->
+            <Button
+                android:id="@+id/btn_run_benchmark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="🚀 运行硬件算力性能 Benchmark"
+                android:backgroundTint="#2563EB"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/tv_benchmark_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text=""
+                android:textColor="#94A3B8"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.drawerlayout.widget.DrawerLayout>

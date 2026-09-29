@@ -32,6 +32,8 @@
 /.swiftpm
 /.vs/
 /.vscode/
+/.gemini/
+/.antigravity/
 /nppBackup
 
 # Coverage

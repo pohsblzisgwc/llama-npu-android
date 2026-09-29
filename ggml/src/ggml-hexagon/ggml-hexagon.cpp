@@ -8279,9 +8279,11 @@ ggml_backend_reg_t ggml_backend_hexagon_reg(void) {
         if (!initialized) {
             auto nErr = htpdrv_init();
             if (nErr != AEE_SUCCESS) {
+                GGML_LOG_ERROR("ggml-hex: htpdrv_init() failed (code %d) - Hexagon NPU backend unavailable\n", nErr);
                 return NULL;
             }
 
+            GGML_LOG_INFO("ggml-hex: FastRPC driver ready, initializing Hexagon backend structures...\n");
             ggml_hexagon_init(&reg);
         }
 
